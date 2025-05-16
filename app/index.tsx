@@ -15,7 +15,6 @@ const Index = () =>{
 
    return(
     <View style = {{flex : 1, justifyContent : 'center', alignItems : 'center'}}>
-      {/* <Button title={"Login"} onPress={onContinue}/> */}
       <Mybutton title={"continue"} onPress={onContinue}/>
     
     </View>

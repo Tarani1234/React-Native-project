@@ -1,21 +1,51 @@
 import Mybutton from "@/Components/Mybutton";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { View, Image, TextInput, ScrollView } from "react-native";
+import { View, Image, TextInput, ScrollView, Text, Alert } from "react-native";
 
 function Login() {
   const router = useRouter();
 
-  // States for name, email and password
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const validate = () => {
+    let valid = true;
+    let newErrors = { name: "", email: "", password: "" };
+
+    if (!name.trim()) {
+      newErrors.name = "Name is required";
+      valid = false;
+    }
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+      valid = false;
+    }
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
   const onLogin = () => {
-    console.log("Name:", name);
-    console.log("Email:", email);
-    console.log("Password:", password);
-    router.navigate("/Signup");
+    if (validate()) {
+      console.log("Name:", name);
+      console.log("Email:", email);
+      console.log("Password:", password);
+      router.navigate("/Signup");
+    } else {
+      Alert.alert("Validation Error", "Please fill in all required fields.");
+    }
   };
 
   return (
@@ -28,41 +58,59 @@ function Login() {
           source={require("@/assets/images/logo.webp")}
           style={{ width: "100%", height: 400, resizeMode: "contain" }}
         />
-        <View style={{ padding: 20, gap: 20 }}>
+        <View style={{ padding: 20, gap: 10 }}>
           <TextInput
             placeholder="Enter your Name"
             value={name}
-            onChangeText={setName}
+            onChangeText={(text) => {
+              setName(text);
+              if (text) setErrors((prev) => ({ ...prev, name: "" }));
+            }}
             style={{
               borderWidth: 1,
               height: 50,
               paddingHorizontal: 20,
               borderRadius: 10,
+              borderColor: errors.name ? "red" : "#ccc",
             }}
           />
+          {errors.name ? <Text style={{ color: "red" }}>{errors.name}</Text> : null}
+
           <TextInput
             placeholder="Enter your Email"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(text) => {
+              setEmail(text);
+              if (text) setErrors((prev) => ({ ...prev, email: "" }));
+            }}
             style={{
               borderWidth: 1,
               height: 50,
               paddingHorizontal: 20,
               borderRadius: 10,
+              borderColor: errors.email ? "red" : "#ccc",
             }}
           />
+          {errors.email ? <Text style={{ color: "red" }}>{errors.email}</Text> : null}
+
           <TextInput
             placeholder="Enter your Password"
             secureTextEntry
             value={password}
-            onChangeText={setPassword}
+            onChangeText={(text) => {
+              setPassword(text);
+              if (text) setErrors((prev) => ({ ...prev, password: "" }));
+            }}
             style={{
               borderWidth: 1,
               height: 50,
               paddingHorizontal: 20,
               borderRadius: 10,
+              borderColor: errors.password ? "red" : "#ccc",
             }}
           />
+          {errors.password ? <Text style={{ color: "red" }}>{errors.password}</Text> : null}
+
           <Mybutton title="Login" onPress={onLogin} />
         </View>
       </View>
